@@ -79,7 +79,7 @@
 2. ***hh_vacancy_api.py*** - модуль содержит код класса-наследника `HeadHunterVacanciesAPI(HeadHunterBaseAPI, BaseVacanciesAPI)` для поиска вакансий по переданному списку ID работодателей.
    - Класс содержит следующие методы:
      - **__init__()**: конструктор для инициализации подключения к API вакансий (api_name_service = vacancies).
-     - **get_vacancies(employer_ids)**: метод ля выполнения GET-запроса поиска вакансий.
+     - **get_vacancies(employer_ids)**: метод для выполнения GET-запроса поиска вакансий.
         *:param employer_ids*: список ID работодателей.
         *:return*: список всех вакансий по запрашиваемым работодателям.
 
