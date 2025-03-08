@@ -13,7 +13,7 @@ class HeadHunterEmployersAPI(HeadHunterBaseAPI, BaseEmployersAPI):
 
     def get_employer_ids(self, employer_names: List[str]) -> List[str]:
         """Метод для выполнения GET-запроса поиска ID работодателя по его названию.
-        :param employer_names: Данные настроек пользователя с перечнем названий работодателей в формате dict.
+        :param employer_names: Данные настроек пользователя с перечнем названий работодателей.
         :return: Список ID работодателей."""
         employer_ids = []
         for name in employer_names:
