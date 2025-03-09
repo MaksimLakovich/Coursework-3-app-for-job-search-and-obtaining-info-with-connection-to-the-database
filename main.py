@@ -2,7 +2,9 @@ from config import path_to_user_employer_settings
 from src.api.hh_area_api import HeadHunterAreasAPI
 from src.api.hh_employer_api import HeadHunterEmployersAPI
 from src.api.hh_vacancy_api import HeadHunterVacanciesAPI
-from src.get_employers_name import get_employer_names_for_search
+from src.file.vacancy_json_file_work import VacancyJSONSaver
+from src.get_file_with_employer_names import get_employer_names_for_search
+from src.objects.vacancy import Vacancy
 
 
 def user_interaction(path_to_settings: str) -> None:
@@ -39,21 +41,35 @@ def user_interaction(path_to_settings: str) -> None:
 
             # ШАГ 1: Подключение к HeadHunter
             if select_platform == "HeadHunter":
+
                 # Получаем список названий организаций (10 работодателей по умолчанию)
                 search_employers_list = get_employer_names_for_search(path_to_settings)
+
                 # Создаем экземпляр класса для работы с API работодателей и получаем список ID работодателей
                 hh_employer_api = HeadHunterEmployersAPI()
                 hh_list_employer_ids = hh_employer_api.get_employer_ids(search_employers_list["employer_names"])
+
                 # Создаем экземпляр класса для работы с API регионов/городов и получаем список ID городов
                 hh_area_api = HeadHunterAreasAPI()
                 hh_list_area_ids = hh_area_api.get_area_ids(area_name)
-                print(hh_list_area_ids)
-                print(type(hh_list_area_ids))
+                ###### print(hh_list_area_ids)
+                ###### print(type(hh_list_area_ids))
+
                 # Создаем экземпляр класса для работы с API вакансий и получаем все вакансии по данным работодателям
                 hh_vacancy_api = HeadHunterVacanciesAPI()
                 hh_list_vacancies = hh_vacancy_api.get_vacancies(hh_list_employer_ids, hh_list_area_ids)
-                print(hh_list_vacancies)
-                print(type(hh_list_vacancies))
+                ###### print(hh_list_vacancies)
+                ###### print(type(hh_list_vacancies))
+
+
+                # Изменение полученных данных с API в список объектов Vacancy.
+                vacancies_data = Vacancy.cast_to_object_list(hh_list_vacancies)
+
+                # Сохранение полученных данных о вакансиях в JSON-файл для вакансий.
+                json_saver_for_vacancy = VacancyJSONSaver()
+                json_saver_for_vacancy.add_vacancy(vacancies_data)
+
+
 
         elif choice == "2":
             pass
