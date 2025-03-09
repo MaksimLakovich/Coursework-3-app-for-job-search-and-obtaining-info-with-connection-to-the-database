@@ -101,23 +101,27 @@
 #### Абстрактные классы:
 1. ***abs_base_file_work.py*** - модуль содержит код абстрактного класса `BaseFileWork(ABC)` для работы с файлами.
    - Абстрактный класс содержит следующие *@abstractmethod*:
-      - **__init__(path_to_file)**: конструктор для инициализации пути к файлу, который будет хранить результаты выгрузки данных.
-        - *:param path_to_file*: путь к файлу (JSON, CSV и т.д.).
+      - **__init__(path_to_file_vacancies, path_to_file_employers)**: конструктор для инициализации путей к файлам, которые будут хранить результаты выгрузки данных.
+        - *:param path_to_file_vacancies*: путь к файлу с вакансиями (JSON, CSV и т.д.).
+        - *:param path_to_file_employers*: путь к файлу с работодателями (JSON, CSV и т.д.).
 
 #### Классы-наследники:
-1. ***vacancy_json_file_work.py*** - модуль содержит код класса-наследника `VacancyJSONSaver(BaseFileWork)` от абстрактного класса (BaseFileWork) для работы с JSON-файлами (работа с вакансиями).
+1. ***json_file_work.py*** - модуль содержит код класса-наследника `JSONSaver(BaseFileWork)` от абстрактного класса (BaseFileWork) для работы с JSON-файлами (вакансии и работодатели).
    - Класс содержит следующие методы:
-     - **__init__(path_to_file)**: конструктор для инициализации пути к JSON-файлу, который будет хранить данные по вакансиям.
-       - *:param path_to_file*: путь к JSON-файлу.
-     - **add_vacancy(vacancy)**: метод для добавления вакансий в JSON-файл.
-       - *:param vacancy*: экземпляр класса Vacancy (OBJECT) или список объектов Vacancy (LIST OF OBJECTS).
+     - **__init__(path_to_file_vacancies, path_to_file_employers)**: конструктор для инициализации путей к JSON-файлам, которые будут хранить данные о вакансиях и работодателях.
+       - *:param path_to_file_vacancies*: путь к JSON-файлу с вакансиями.
+       - *:param path_to_file_employers*: путь к JSON-файлу с работодателями.
+     - **add_vacancy(vacancies)**: метод для добавления вакансий в JSON-файл.
+       - *:param vacancies*: список объектов Vacancy, содержащих данные о вакансиях.
+     - **add_employer(vacancies)**: метод для добавления работодателей в JSON-файл.
+       - *:param vacancies*: список объектов Vacancy, содержащих данные о работодателях.
 
 ## <a>src/objects/</a>
 
 #### Базовые классы:
-1. ***vacancy.py*** - модуль содержит код класса `` для работы с объектом "Вакансия".
+1. ***vacancy.py*** - модуль содержит код класса `Vacancy` для работы с объектом "Вакансия".
    - Класс содержит следующие методы:
-     - **__init__(employer_id, vacancy_id, name, area_name, alternate_url, salary_from, salary_to, salary_currency, published_at, archived, snippet_responsibility,)**: конструктор для создания вакансии. Инициализация экземпляра класса (объекта).
+     - **__init__(employer_id, employer_name, employer_url, vacancy_id, name, area_name, alternate_url, salary_from, salary_to, salary_currency, published_at, archived, snippet_responsibility,)**: конструктор для создания вакансии. Инициализация экземпляра класса (объекта).
      - **__str__**: магический метод возвращает строковое представление вакансии для print().
      - **__repr__**: магический метод возвращает краткую строку для отладки (repr).
      - **__validate_currency(currency)**: приватный метод валидации валюты зарплаты.
@@ -130,6 +134,14 @@
      - **cast_to_object_list(vacancies_data)**: статик-метод преобразует список словарей в список объектов Vacancy.
        - *:param vacancies_data*: файл с полученными вакансиями, которые сформировались в запросе API сервиса вакансий.
        - *:return*: возвращает список объектов Vacancy.
+2. ***employer.py*** - модуль содержит код класса `Employer` для работы с объектом "Работодатель".
+   - Класс содержит следующие методы:
+     - **__init__(employer_id, employer_name, employer_url)**: конструктор для создания работодателя. Инициализация экземпляра класса (объекта).
+     - **__str__**: магический метод возвращает строковое представление работодателя для print().
+     - **__repr__**: магический метод возвращает краткую строку для отладки (repr).
+     - **cast_to_object_list(vacancies_data)**: статик-метод преобразует список словарей в список объектов Employer.
+       - *:param vacancies_data*: файл с полученными вакансиями, которые сформировались в запросе API сервиса вакансий.
+       - *:return*: возвращает список объектов Employer.
 
 
 
@@ -153,6 +165,9 @@
 
 3. ***src/vacancy_to_dict.py*** - модуль содержит код функции `vacancy_to_dict(vacancy)`, которая:
    - Преобразовывает объекты Vacancy в словарь.
+
+4. ***src/employer_to_dict.py*** - модуль содержит код функции `employer_to_dict(employer)`, которая:
+   - Преобразовывает объекты Employer в словарь.
 
 
 

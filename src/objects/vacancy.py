@@ -8,6 +8,8 @@ class Vacancy:
 
     __slots__ = [
         "employer_id",
+        "employer_name",
+        "employer_url",
         "vacancy_id",
         "name",
         "area_name",
@@ -23,6 +25,8 @@ class Vacancy:
     def __init__(
         self,
         employer_id: str,
+        employer_name: str,
+        employer_url: str,
         vacancy_id: str,
         name: str,
         area_name: str,
@@ -36,6 +40,8 @@ class Vacancy:
     ):
         """Конструктор для создания вакансии. Инициализация экземпляра класса (объекта)."""
         self.employer_id = employer_id
+        self.employer_name = employer_name
+        self.employer_url = employer_url
         self.vacancy_id = vacancy_id
         self.name = name
         self.area_name = area_name
@@ -84,7 +90,6 @@ class Vacancy:
             return 0.0
         if currency and currency != "RUR":
             return salary * get_exchange_rates(currency_name=currency)
-
         # Возвращаем исходное значение зарплаты, так как оно в RUB и не требует конвертации
         return salary
 
@@ -97,6 +102,8 @@ class Vacancy:
         return [
             Vacancy(
                 employer_id=data["employer"]["id"],
+                employer_name=data["employer"]["name"],
+                employer_url=data["employer"]["alternate_url"],
                 vacancy_id=data["id"],
                 name=data["name"],
                 area_name=data["area"]["name"],
