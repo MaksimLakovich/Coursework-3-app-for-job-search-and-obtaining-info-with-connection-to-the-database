@@ -25,7 +25,7 @@ class HeadHunterAreasAPI(HeadHunterBaseAPI, BaseAreasAPI):
             print("❌ Ошибка: Не удалось получить список городов, будут возвращены все города по умолчанию.")
             return [1]  # Если API вернул пустой ответ, то использую ID для "Все города"
 
-        for country in data:  #Перебираю страны
+        for country in data:  # Перебираю страны
             for region in country["areas"]:  # Перебираю регионы
                 for city in region["areas"]:  # Перебираю города
                     if city["name"].lower() in [name.lower() for name in area_names]:
