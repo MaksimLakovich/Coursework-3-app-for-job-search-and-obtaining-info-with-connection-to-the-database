@@ -7,7 +7,8 @@
 [5. Модуль config.py](#title5) / 
 [6. Директория проекта "data"](#title6) / 
 [7. Описание файла ".env.example"](#title7) / 
-[8. Установка проекта](#title8) / 
+[8. Описание файла "database.ini"](#title8) / 
+[9. Установка проекта](#title9) / 
 
 
 
@@ -148,8 +149,10 @@
 #### Абстрактные классы:
 1. ***abs_database_creator.py*** - модуль содержит код абстрактного класса `BaseDatabaseCreator(ABC)` для работы с базой данных.
    - Абстрактный класс содержит следующие *@abstractmethod*:
-      - **__init__()**: конструктор для инициализации/создания Database.
+      - **__init__()**: конструктор для подключения к БД.
       - **drop_database()**: абстрактный метод для удаления БД перед созданием новой.
+      - **create_database()**: абстрактный метод для создания БД.
+      - **close_connection**: абстрактный метод для закрытия соединения с БД.
 2. ***abs_table_schema.py*** - модуль содержит код абстрактного класса `BaseTableSchema(ABC)` для работы со структурой таблиц в БД.
    - Абстрактный класс содержит следующие *@abstractmethod*:
       - **__init__()**: конструктор для подключения к Database..
@@ -163,6 +166,15 @@
         - *:param json_file*: путь к JSON-файлу с данными.
 
 #### Классы-наследники:
+1. ***create_database.py.py*** - модуль содержит код класса-наследника `CreateDatabase(BaseDatabaseCreator)` для работы с базой данных в PostgreSQL.
+   - Класс содержит следующие методы:
+     - **__init__(params)**: конструктор для подключения к PostgreSQL.
+       - *:param params*: Параметры подключения к PostgreSQL.
+     - **drop_database(database_name)**: метод для удаления БД в PostgreSQL, если она существует перед созданием новой.
+       - *:param database_name*: Название БД.
+     - **create_database(database_name)**: метод для создания БД в PostgreSQL.
+       - *:param database_name*: Название БД.
+     - **close_connection()**: метод для закрытия соединения с PostgreSQL.
 
 
 
@@ -171,7 +183,7 @@
 
 ## <a>src/</a>
 
-1. ***src/get_file_with_employer_names.py*** - модуль содержит код функции `get_employer_names_for_search(path_to_file)`, которая:
+1. ***src/read_file_with_employer_names.py*** - модуль содержит код функции `read_json_user_employer_settings(path_to_file)`, которая:
    - Cчитывает из json-файла заданный по умолчанию пользовательский перечень работодателей (10 компаний) для дальнейшего поиска и сбора всех вакансий по указанным в файле компаниям.
    - Если пользовательских настроек нет, то возвращается пустой список, который потом, с помощью функции пользовательского взаимодействия user_interaction() в main.py, будет заполняться/наполняться самим пользователем.
    - Параметры функции:
@@ -209,11 +221,12 @@
 1. `initialize_directories()` - функция создает необходимые директории и файлы, если они еще не существуют.
    - ***file_with_employers*** - файл для вакансий.
    - ***file_with_employers*** - файл для работодателей.
-2. Определен путь к JSON-файлу с пользовательскими настройками для списка названий работодателей по которым будет выполняться поиск вакансий (../data/)
+2. `config(filename=None, section="postgresql")` - функция для получения параметров подключения к БД.
+3. Определен путь к JSON-файлу с пользовательскими настройками для списка названий работодателей по которым будет выполняться поиск вакансий (../data/)
    - path_to_user_employer_settings = DATA_DIR / ***"user_employer_settings.json"***
-3. Определен путь к JSON-файлу с вакансиями, который размещается в проекте в директории (../data/)
+4. Определен путь к JSON-файлу с вакансиями, который размещается в проекте в директории (../data/)
    - file_with_vacancies = DATA_DIR / ***"json_data_vacancies.json"***
-4. Определен путь к JSON-файлу с работодателями, который размещается в проекте в директории (../data/)
+5. Определен путь к JSON-файлу с работодателями, который размещается в проекте в директории (../data/)
 file_with_employers = DATA_DIR / ***"json_data_employers.json"***
 
 
@@ -247,12 +260,24 @@ file_with_employers = DATA_DIR / ***"json_data_employers.json"***
 ## <a id="title7">7. Описание файла ".env.example"</a>
 Для получения курса валют и конвертации в RUB используется сервис `Exchange Rates Data`:
  - Документация API: https://apilayer.com/exchangerates_data-api
- - API_KEY_EXCHANGE_RATES=your_api_key_here
+ - API_KEY_EXCHANGE_RATES=***your_api_key_here***
 
 
 
 
-## <a id="title8">8. Установка проекта</a>
+## <a id="title8">8. Описание файла "database.ini"</a>
+Для сокрытия параметров доступа к БД используется парсер для получения параметров из `config()` из модуля [config.py](#title5).
+ - Структура файла **database.ini**:
+[postgresql]
+host=***host_here***
+user=***user_here***
+password=***password_here***
+port=***port_here***
+
+
+
+
+## <a id="title9">9. Установка проекта</a>
 1. Клонируйте репозиторий:
 ```
 git clone https://github.com/MaksimLakovich/Coursework-3-app-for-job-search-and-obtaining-info-with-connection-to-the-database.git

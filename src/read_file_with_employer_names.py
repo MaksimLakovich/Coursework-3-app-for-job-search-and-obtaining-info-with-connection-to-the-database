@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Dict, Union
 
 
-def get_employer_names_for_search(path_to_file: Union[str, Path]) -> Dict[str, Any]:
+def read_json_user_employer_settings(path_to_file: Union[str, Path]) -> Dict[str, Any]:
     """1) Функция считывает из json-файла заданный по умолчанию пользовательский перечень работодателей (10 компаний)
     для дальнейшего поиска и сбора всех вакансий по указанным в файле компаниям. 2) Если пользовательских настроек нет,
     то возвращается пустой список, который потом, с помощью функции пользовательского взаимодействия user_interaction()
