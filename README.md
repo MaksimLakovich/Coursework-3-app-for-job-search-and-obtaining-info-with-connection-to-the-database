@@ -161,20 +161,20 @@
       - **close_connection**: абстрактный метод для закрытия соединения с БД.
 3. ***abs_table_filler.py*** - модуль содержит код абстрактного класса `BaseTableFiller(ABC)` для работы с содержимым таблиц в БД (загрузка данных).
    - Абстрактный класс содержит следующие *@abstractmethod*:
-      - **fill_employers_table(json_file)**: абстрактный метод для загрузки данных о работодателях.
-        - *:param json_file*: путь к JSON-файлу с данными.
-      - **fill_vacancies_table(json_file)**: абстрактный метод для загрузки данных о вакансиях.
-        - *:param json_file*: путь к JSON-файлу с данными.
+      - **__init__()**: конструктор для подключения к БД.
+      - **fill_employers_table()**: абстрактный метод для загрузки данных о работодателях в таблицу БД.
+      - **fill_vacancies_table()**: абстрактный метод для загрузки данных о вакансиях в таблицу БД.
+      - **close_connection**: абстрактный метод для закрытия соединения с БД.
 
 #### Классы-наследники:
 1. ***create_database.py*** - модуль содержит код класса-наследника `CreateDatabase(BaseDatabaseCreator)` для работы с базой данных в PostgreSQL.
    - Класс содержит следующие методы:
      - **__init__(params)**: конструктор для подключения к PostgreSQL.
-       - *:param params*: Параметры подключения к PostgreSQL.
+       - *:param params*: параметры подключения к PostgreSQL.
      - **drop_database(database_name)**: метод для удаления БД в PostgreSQL, если она существует перед созданием новой.
-       - *:param database_name*: Название БД.
+       - *:param database_name*: название БД.
      - **create_database(database_name)**: метод для создания БД в PostgreSQL.
-       - *:param database_name*: Название БД.
+       - *:param database_name*: название БД.
      - **close_connection()**: метод для закрытия соединения с PostgreSQL.
 2. ***create_table_schema.py*** - модуль содержит код класса-наследника `CreateTableSchema(BaseTableSchema)` для работы со структурой таблиц в БД PostgreSQL.
    - Класс содержит следующие методы:
@@ -183,6 +183,16 @@
        - *:param params*: Параметры подключения к PostgreSQL.
      - **create_employers_table()**: метод для создания таблицы в PostgreSQL для работодателей (Employer).
      - **create_vacancies_table()**: метод для создания таблицы в PostgreSQL для вакансий (Vacancy).
+     - **close_connection()**: метод для закрытия соединения с PostgreSQL.
+3. ***fill_table.py*** - модуль содержит код класса-наследника `FillTable(BaseTableFiller)` для работы с содержимым таблиц в БД PostgreSQL.
+   - Класс содержит следующие методы:
+     - **__init__(database_name, params)**: конструктор для подключения к PostgreSQL.
+       - *:param database_name*: название БД в PostgreSQL.
+       - *:param params*: параметры подключения к PostgreSQL.
+     - **fill_employers_table(json_data)**: метод для загрузки данных о работодателях в таблицу 'employers' в БД PostgreSQL.
+       - *:param json_data*: данные о работодателях.
+     - **fill_vacancies_table(json_data)**: метод для загрузки данных о вакансиях в таблицу 'vacancies' в БД PostgreSQL.
+       - *:param json_data*: данные о вакансиях.
      - **close_connection()**: метод для закрытия соединения с PostgreSQL.
 
 
@@ -199,16 +209,30 @@
      - *:param path_to_file*: путь к json-файлу с пользовательскими настройками.
      - *:return*: Перечень названий работодателей в формате dict.
 
-2. ***src/exchange_rates.py*** - модуль содержит код функции `get_exchange_rates(currency_name)`, которая:
+2. ***src/read_json_data_employers.py*** - модуль содержит код функции `read_json_data_employers(path_to_file)`, которая:
+   - Cчитывает из json-файла данные о работодателях.
+   - Если json-файла нет, то возвращается пустой список.
+   - Параметры функции:
+     - *:param path_to_file*: путь к json-файлу.
+     - *:return*: данные о работодателях.
+
+3. ***read_json_data_vacancies.py*** - модуль содержит код функции `read_json_data_vacancies(path_to_file)`, которая:
+   - Cчитывает из json-файла данные о вакансиях.
+   - Если json-файла нет, то возвращается пустой список.
+   - Параметры функции:
+     - *:param path_to_file*: путь к json-файлу.
+     - *:return*: данные о вакансиях.
+
+4. ***src/exchange_rates.py*** - модуль содержит код функции `get_exchange_rates(currency_name)`, которая:
    - Получает текущий курс валют по отношению к RUB.
    - Параметры функции:
      - *:param currency_name*: название валюты, для которой будет выполняться запрос курса по отношению к RUB.
      - *:return*: курс по интересующей валюте (пример для "USD": функция вернет 101.21).
 
-3. ***src/vacancy_to_dict.py*** - модуль содержит код функции `vacancy_to_dict(vacancy)`, которая:
+5. ***src/vacancy_to_dict.py*** - модуль содержит код функции `vacancy_to_dict(vacancy)`, которая:
    - Преобразовывает объекты Vacancy в словарь.
 
-4. ***src/employer_to_dict.py*** - модуль содержит код функции `employer_to_dict(employer)`, которая:
+6. ***src/employer_to_dict.py*** - модуль содержит код функции `employer_to_dict(employer)`, которая:
    - Преобразовывает объекты Employer в словарь.
 
 
@@ -236,7 +260,7 @@
 4. Определен путь к JSON-файлу с вакансиями, который размещается в проекте в директории (../data/)
    - file_with_vacancies = DATA_DIR / ***"json_data_vacancies.json"***
 5. Определен путь к JSON-файлу с работодателями, который размещается в проекте в директории (../data/)
-file_with_employers = DATA_DIR / ***"json_data_employers.json"***
+   - file_with_employers = DATA_DIR / ***"json_data_employers.json"***
 
 
 
