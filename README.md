@@ -155,9 +155,10 @@
       - **close_connection**: абстрактный метод для закрытия соединения с БД.
 2. ***abs_table_schema.py*** - модуль содержит код абстрактного класса `BaseTableSchema(ABC)` для работы со структурой таблиц в БД.
    - Абстрактный класс содержит следующие *@abstractmethod*:
-      - **__init__()**: конструктор для подключения к Database..
-      - **create_employers_table()**: абстрактный метод для создания в БД таблицы для работодателей (Employer).
-      - **create_vacancies_table()**: абстрактный метод для создания в БД таблицы для вакансий (Vacancy).
+      - **__init__()**: конструктор для подключения к БД.
+      - **create_employers_table()**: абстрактный метод для создания таблицы для работодателей (Employer).
+      - **create_vacancies_table()**: абстрактный метод для создания таблицы для вакансий (Vacancy).
+      - **close_connection**: абстрактный метод для закрытия соединения с БД.
 3. ***abs_table_filler.py*** - модуль содержит код абстрактного класса `BaseTableFiller(ABC)` для работы с содержимым таблиц в БД (загрузка данных).
    - Абстрактный класс содержит следующие *@abstractmethod*:
       - **fill_employers_table(json_file)**: абстрактный метод для загрузки данных о работодателях.
@@ -166,7 +167,7 @@
         - *:param json_file*: путь к JSON-файлу с данными.
 
 #### Классы-наследники:
-1. ***create_database.py.py*** - модуль содержит код класса-наследника `CreateDatabase(BaseDatabaseCreator)` для работы с базой данных в PostgreSQL.
+1. ***create_database.py*** - модуль содержит код класса-наследника `CreateDatabase(BaseDatabaseCreator)` для работы с базой данных в PostgreSQL.
    - Класс содержит следующие методы:
      - **__init__(params)**: конструктор для подключения к PostgreSQL.
        - *:param params*: Параметры подключения к PostgreSQL.
@@ -174,6 +175,14 @@
        - *:param database_name*: Название БД.
      - **create_database(database_name)**: метод для создания БД в PostgreSQL.
        - *:param database_name*: Название БД.
+     - **close_connection()**: метод для закрытия соединения с PostgreSQL.
+2. ***create_table_schema.py*** - модуль содержит код класса-наследника `CreateTableSchema(BaseTableSchema)` для работы со структурой таблиц в БД PostgreSQL.
+   - Класс содержит следующие методы:
+     - **__init__(database_name, params)**: конструктор для подключения к PostgreSQL.
+       - *:param database_name*: название БД в PostgreSQL.
+       - *:param params*: Параметры подключения к PostgreSQL.
+     - **create_employers_table()**: метод для создания таблицы в PostgreSQL для работодателей (Employer).
+     - **create_vacancies_table()**: метод для создания таблицы в PostgreSQL для вакансий (Vacancy).
      - **close_connection()**: метод для закрытия соединения с PostgreSQL.
 
 
