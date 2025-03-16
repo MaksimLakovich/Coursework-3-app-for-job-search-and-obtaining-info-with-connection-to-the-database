@@ -11,14 +11,18 @@ class HeadHunterVacanciesAPI(HeadHunterBaseAPI, BaseVacanciesAPI):
         """Конструктор для инициализации подключения к API вакансий (api_name_service = vacancies)."""
         super().__init__("vacancies")
 
-    def get_vacancies(self, employer_ids: List[str], area_ids: List[int]) -> List[Dict[str, Any]]:
+    def get_vacancies(self, keyword: str, employer_ids: List[str], area_ids: List[int]) -> List[Dict[str, Any]]:
         """Метод для выполнения GET-запроса поиска вакансий.
+        :param keyword: Ключевое слово для поиска.
         :param employer_ids: Список ID работодателей.
         :param area_ids: Список ID регионов/городов.
         :return: Список всех вакансий по запрашиваемым работодателям."""
         vacancies = []  # Итоговый список, в который складываются найденные вакансии.
+        keyword = f"{keyword}*"  # Добавляю * чтоб API поиск делал и по части слова (например, "касс", вместо "кассир")
 
-        params: Dict[str, Any] = {"employer_id": employer_ids, "area": area_ids, "page": 0, "per_page": 100}
+        params: Dict[str, Any] = {
+            "text": keyword, "employer_id": employer_ids, "area": area_ids, "page": 0, "per_page": 100
+        }
 
         # Запрашиваем первую страницу, чтобы узнать количество доступных страниц
         data = self._make_request(params)
