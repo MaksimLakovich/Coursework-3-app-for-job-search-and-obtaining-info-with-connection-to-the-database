@@ -23,7 +23,7 @@ class BaseDBManager(ABC):
         pass
 
     @abstractmethod
-    def get_avg_salary(self) ->  list[tuple]:
+    def get_avg_salary(self) -> list[tuple]:
         """Абстрактный метод для получения средней зарплаты по вакансиям."""
         pass
 

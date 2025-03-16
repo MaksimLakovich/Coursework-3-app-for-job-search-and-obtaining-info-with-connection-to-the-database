@@ -1,25 +1,5 @@
 [
     {
-        "employer_id": "3529",
-        "employer_name": "СБЕР",
-        "employer_url": "https://hh.ru/employer/3529"
-    },
-    {
-        "employer_id": "3388",
-        "employer_name": "Газпромбанк",
-        "employer_url": "https://hh.ru/employer/3388"
-    },
-    {
-        "employer_id": "4181",
-        "employer_name": "Банк ВТБ (ПАО)",
-        "employer_url": "https://hh.ru/employer/4181"
-    },
-    {
-        "employer_id": "80",
-        "employer_name": "Альфа-Банк",
-        "employer_url": "https://hh.ru/employer/80"
-    },
-    {
         "employer_id": "6591",
         "employer_name": "ПСБ (ПАО «Промсвязьбанк»)",
         "employer_url": "https://hh.ru/employer/6591"
@@ -30,8 +10,43 @@
         "employer_url": "https://hh.ru/employer/78638"
     },
     {
+        "employer_id": "2492",
+        "employer_name": "Московский Кредитный Банк",
+        "employer_url": "https://hh.ru/employer/2492"
+    },
+    {
+        "employer_id": "4496",
+        "employer_name": "МТС Финтех",
+        "employer_url": "https://hh.ru/employer/4496"
+    },
+    {
         "employer_id": "3443",
         "employer_name": "Банк ДОМ.РФ",
         "employer_url": "https://hh.ru/employer/3443"
+    },
+    {
+        "employer_id": "3529",
+        "employer_name": "СБЕР",
+        "employer_url": "https://hh.ru/employer/3529"
+    },
+    {
+        "employer_id": "1754",
+        "employer_name": "UniCredit Bank",
+        "employer_url": "https://hh.ru/employer/1754"
+    },
+    {
+        "employer_id": "4181",
+        "employer_name": "Банк ВТБ (ПАО)",
+        "employer_url": "https://hh.ru/employer/4181"
+    },
+    {
+        "employer_id": "3388",
+        "employer_name": "Газпромбанк",
+        "employer_url": "https://hh.ru/employer/3388"
+    },
+    {
+        "employer_id": "80",
+        "employer_name": "Альфа-Банк",
+        "employer_url": "https://hh.ru/employer/80"
     }
 ]

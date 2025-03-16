@@ -57,7 +57,7 @@ class FillTable(BaseTableFiller):
                 if vacancy_id and name and employer_id:
                     self.cur.execute(
                         """
-                        INSERT INTO vacancies (vacancy_id, employer_id, name, area_name, alternate_url, salary_from, 
+                        INSERT INTO vacancies (vacancy_id, employer_id, name, area_name, alternate_url, salary_from,
                         salary_to, salary_currency, published_at, archived, snippet_responsibility)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """,

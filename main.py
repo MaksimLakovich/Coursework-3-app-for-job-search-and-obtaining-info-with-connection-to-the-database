@@ -5,9 +5,11 @@ from config import (config, file_with_employers, file_with_vacancies,
 from src.api.hh_area_api import HeadHunterAreasAPI
 from src.api.hh_employer_api import HeadHunterEmployersAPI
 from src.api.hh_vacancy_api import HeadHunterVacanciesAPI
+from src.correct_word_form import correct_word_form
 from src.database.create_database import CreateDatabase
 from src.database.create_table_schema import CreateTableSchema
 from src.database.fill_table import FillTable
+from src.db_manager.database_manager import DBManager
 from src.file.json_file_work import JSONSaver
 from src.objects.vacancy import Vacancy
 from src.read_file_with_employer_names import read_json_user_employer_settings
@@ -28,14 +30,14 @@ def user_interaction(
     search_text = "Не задано"
 
     while True:
-        print("🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹")
+        print("\n🔹 🔹 🔹 🔹 🔹 🔹 🔹 🔹 🔹 🔹")
         print(f"🚀 Текущий список компаний: {employers_list}")
         print(f"🚀 Текущий список городов: {area_name}")
         print(f"🚀 Текущий список ключевых слов: {search_text}")
-        print("🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹")
+        print("🔹 🔹 🔹 🔹 🔹 🔹 🔹 🔹 🔹 🔹")
         print("\nУстановите дополнительные параметры поиска вакансий и работодателей:")
         print("1️⃣ - ЗАПУСТИТЬ ПОИСК ПО ЗАДАННЫМ ПАРАМЕТРАМ")
-        print("2️⃣ - (❌не реализовано) Изменить текущий список компаний в поиске")
+        print("2️⃣ - Изменить текущий список компаний в поиске")
         print("3️⃣ - Изменить список городов в поиске вакансий")
         print("4️⃣ - Задать ключевое слово в поиске вакансий")
         print("5️⃣ - Сбросить дополнительные параметры и вернуться к настройкам по умолчанию")
@@ -118,12 +120,127 @@ def user_interaction(
                 fill_table_postgresql.fill_vacancies_table(vacancies_data)
                 fill_table_postgresql.close_connection()  # Закрываем соединения с БД, чтоб не было с ней потом проблем
 
+                while True:
+                    print("\nХотите воспользоваться встроенными методами фильтрации полученных данных?")
+                    print("1️⃣ - Да")
+                    print("2️⃣ - Нет, вернуться в главное меню")
+                    choice = input("Выберите действие (1-2): ").strip()
+
+                    if choice == "1":
+
+                        while True:
+                            print("\nВыберите один из вариантов фильтрации данных:")
+                            print("1️⃣ - Получить список всех компаний и количества вакансий у каждой компании "
+                                  "(get_companies_and_vacancies_count)")
+                            print("2️⃣ - Получить список всех вакансий с указанием названия компании, названия "
+                                  "вакансии, зарплаты и ссылки на вакансию (get_all_vacancies)")
+                            print("3️⃣ - Получить среднюю зарплату по вакансиям (get_avg_salary)")
+                            print("4️⃣ - Получить список всех вакансий, у которых зарплата выше средней по всем "
+                                  "вакансиям (get_vacancies_with_higher_salary)")
+                            print("5️⃣ - Получить список всех вакансий, в названии которых есть заданные вами "
+                                  "ключевые слова (get_vacancies_with_keyword)")
+                            print("6️⃣ - Завершить. Вернуться в главное меню")
+                            choice = input("Выберите действие (1-6): ").strip()
+
+                            if choice == "1":
+                                print("\nПОЛУЧЕН СЛЕДУЮЩИЙ РЕЗУЛЬТАТ:")
+                                db = DBManager(my_database_name, params)
+                                result = db.get_companies_and_vacancies_count()
+                                for index, (company, vacancy_count) in enumerate(result, start=1):
+                                    word = correct_word_form(vacancy_count)
+                                    print(f"📌 {index}. 📝 {company.upper()}: {vacancy_count} {word}")
+                                db.close_connection()
+
+                            elif choice == "2":
+                                print("\nПОЛУЧЕН СЛЕДУЮЩИЙ РЕЗУЛЬТАТ:")
+                                db = DBManager(my_database_name, params)
+                                result = db.get_all_vacancies()
+                                for index, (
+                                        company_name, vacancy_name, salary_from, salary_to, vacancy_url
+                                ) in enumerate(result, start=1):
+                                    salary_from = float(salary_from) if salary_from else 0.0
+                                    salary_to = float(salary_to) if salary_to else 0.0
+                                    if salary_from == 0 and salary_to == 0:
+                                        salary_text = "💰 Зарплата не указана"
+                                    elif salary_to == 0:
+                                        salary_text = f"💰 Зарплата от {salary_from:.2f} руб."
+                                    elif salary_from == 0:
+                                        salary_text = f"💰 Зарплата до {salary_to:.2f} руб."
+                                    else:
+                                        salary_text = f"💰 Зарплата от {salary_from:.2f} до {salary_to:.2f} руб."
+                                    print(
+                                        f"📌 {index}. 📝 {company_name.upper()}: '{vacancy_name}' {salary_text} "
+                                        f"🔗 {vacancy_url}")
+                                db.close_connection()
+
+                            elif choice == "3":
+                                print("\nПОЛУЧЕН СЛЕДУЮЩИЙ РЕЗУЛЬТАТ:")
+                                db = DBManager(my_database_name, params)
+                                result = db.get_avg_salary()
+                                for index, (company, salary_from) in enumerate(result, start=1):
+                                    salary_from = float(salary_from) if salary_from else 0.0
+                                    print(f"📌 {index}. 📝 {company.upper()}: средняя зарплата по вакансиям "
+                                          f"компании от {salary_from:.2f} руб.")
+                                db.close_connection()
+
+                            elif choice == "4":
+                                print("\nПОЛУЧЕН СЛЕДУЮЩИЙ РЕЗУЛЬТАТ:")
+                                db = DBManager(my_database_name, params)
+                                result = db.get_vacancies_with_higher_salary()
+                                for index, (
+                                        vacancy_id, employer_id, name, area_name, alternate_url, salary_from,
+                                        salary_to, salary_currency, published_at, archived, snippet_responsibility
+                                ) in enumerate(result, start=1):
+                                    print(f"📌 {index}. 📝 {name} 📍 {area_name} 🔗 {alternate_url} 💰 "
+                                          f"{salary_from} {salary_currency} (дата публикации: {published_at})")
+                                db.close_connection()
+
+                            elif choice == "5":
+                                user_keyword = input("🚀 Введите ключевое слово для поиска вакансий: ").strip().lower()
+                                db = DBManager(my_database_name, params)
+                                result = db.get_vacancies_with_keyword(user_keyword)
+                                if result:
+                                    print("\nПОЛУЧЕН СЛЕДУЮЩИЙ РЕЗУЛЬТАТ:")
+                                    print(f"📌 Найдено {len(result)} вакансий с ключевым словом '{user_keyword}':\n")
+                                    for index, (
+                                            vacancy_id, employer_id, name, area_name, alternate_url, salary_from,
+                                            salary_to, salary_currency, published_at, archived, snippet_responsibility
+                                    ) in enumerate(result, start=1):
+                                        salary_from = float(salary_from) if salary_from else 0.0
+                                        salary_to = float(salary_to) if salary_to else 0.0
+                                        if salary_from == 0 and salary_to == 0:
+                                            salary_text = "💰 Зарплата не указана"
+                                        elif salary_to == 0:
+                                            salary_text = f"💰 Зарплата от {salary_from:.2f} руб."
+                                        elif salary_from == 0:
+                                            salary_text = f"💰 Зарплата до {salary_to:.2f} руб."
+                                        else:
+                                            salary_text = f"💰 Зарплата от {salary_from:.2f} до {salary_to:.2f} руб."
+                                        print(
+                                            f"📌 {index}. 📝 {name} 📍 {area_name} 🔗 {alternate_url} {salary_text} "
+                                            f"(дата публикации: {published_at})")
+                                else:
+                                    print(f"❌ Вакансий с ключевым словом '{user_keyword}' не найдено.")
+                                db.close_connection()
+
+                            elif choice == "6":
+                                break
+
+                            else:
+                                print("❌ Ошибка: Некорректный ввод. Попробуйте снова.")
+
+                    elif choice == "2":
+                        break
+
+                    else:
+                        print("❌ Ошибка: Некорректный ввод. Попробуйте снова.")
+
         elif choice == "2":
-            print("❌ Изменение списка компаний пока не реализовано.")
+            print("\n❌ Изменение списка компаний будет реализовано в следующем release.")
 
         elif choice == "3":
 
-            user_choice = (input("Введите город (или набор городов через запятую): ").title())
+            user_choice = (input("\nВведите город (или набор городов через запятую): ").title())
 
             if area_name[0] == "Все города":
                 area_name = []  # Очищаю список, так как пользователь вводит новые города и нужно удалить "Все города"
@@ -135,21 +252,21 @@ def user_interaction(
 
         elif choice == "4":
 
-            user_choice = (input("Введите ключевое слово: ").strip().lower())
+            user_choice = (input("\nВведите ключевое слово: ").strip().lower())
             search_text = user_choice
 
         elif choice == "5":
             employers_list = read_json_user_employer_settings(path_to_settings)["employer_names"]
             area_name = ["Все города"]
             search_text = "Не задано"
-            print("✅Дополнительные параметры сброшены и возвращены настройки по умолчанию.")
+            print("\n✅ Дополнительные параметры сброшены и возвращены настройки по умолчанию.")
 
         elif choice == "6":
-            print("✅Завершение работы.")
+            print("\n✅ Работа программы завершена.")
             break
 
         else:
-            print("❌Ошибка: Некорректный ввод. Попробуйте снова.")
+            print("\n❌ Ошибка: Некорректный ввод. Попробуйте снова.")
 
 
 if __name__ == "__main__":

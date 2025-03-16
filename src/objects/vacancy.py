@@ -93,7 +93,6 @@ class Vacancy:
         # Возвращаем исходное значение зарплаты, так как оно в RUB и не требует конвертации
         return salary
 
-
     @staticmethod
     def cast_to_object_list(vacancies_data: list[dict[str, Any]]) -> list["Vacancy"]:
         """Статик-метод преобразует список словарей в список объектов Vacancy.
