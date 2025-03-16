@@ -26,9 +26,18 @@ class HeadHunterAreasAPI(HeadHunterBaseAPI, BaseAreasAPI):
             return [1]  # Если API вернул пустой ответ, то использую ID для "Все города"
 
         for country in data:  # Перебираю страны
+
             for region in country["areas"]:  # Перебираю регионы
+                region_name = region["name"].replace("-", " ").lower().strip()
+
+                # Проверяю, если города записаны как регион (например, Санкт-Петербург, Севастополь и тд)
+                if region_name in [name.replace("-", " ").lower().strip() for name in area_names]:
+                    area_ids.append(int(region["id"]))
+
                 for city in region["areas"]:  # Перебираю города
-                    if city["name"].lower() in [name.lower() for name in area_names]:
+                    city_name = city["name"].replace("-", " ").lower().strip()
+
+                    if city_name in [name.replace("-", " ").lower().strip() for name in area_names]:
                         area_ids.append(int(city["id"]))
 
         return area_ids if area_ids else [1]  # Если ничего не найдено, то использую ID для "Все города"

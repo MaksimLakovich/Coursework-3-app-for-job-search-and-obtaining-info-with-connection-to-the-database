@@ -8,7 +8,7 @@ class CreateDatabase(BaseDatabaseCreator):
 
     def __init__(self, params: dict) -> None:
         """Конструктор для подключения к PostgreSQL (без выбора БД).
-        :param params: Параметры подключения к PostgreSQL."""
+        :param params: Параметры подключения к БД."""
         self.conn = psycopg2.connect(dbname="template1", **params)
         self.conn.autocommit = True
         self.cur = self.conn.cursor()

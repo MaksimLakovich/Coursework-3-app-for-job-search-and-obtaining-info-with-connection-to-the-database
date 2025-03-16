@@ -10,8 +10,8 @@ class FillTable(BaseTableFiller):
 
     def __init__(self, database_name: str, params: dict) -> None:
         """Конструктор для подключения к PostgreSQL.
-        :param database_name: Название БД в PostgreSQL.
-        :param params: Параметры подключения к PostgreSQL."""
+        :param database_name: Название БД.
+        :param params: Параметры подключения."""
         self.conn = psycopg2.connect(dbname=database_name, **params)
         self.conn.autocommit = True
         self.cur = self.conn.cursor()
