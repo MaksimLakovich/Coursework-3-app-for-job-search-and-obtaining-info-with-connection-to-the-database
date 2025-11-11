@@ -92,7 +92,7 @@ def user_interaction(
                 json_saver_for_vacancy.add_employer(vacancies_data)
 
                 # Создаем и сохраняем данные о вакансиях и работодателях в БД
-                my_database_name = "coursework_3_database_vacancy"
+                my_database_name = "save_db_hh_vacancies_by_employers"
                 # Используем функцию для парсинга параметров подключения к БД из database.ini
                 params = config()
 
